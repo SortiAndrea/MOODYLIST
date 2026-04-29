@@ -1,0 +1,11 @@
+﻿@page
+@model PreferitiModel
+<h2>Le tue playlist salvate</h2>
+
+@foreach (var p in Model.Playlists)
+{
+    <div>
+        <h4>@p.Name</h4>
+        <p>@p.Mood</p>
+    </div>
+}

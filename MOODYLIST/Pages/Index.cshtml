@@ -1,0 +1,53 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container text-center mt-5">
+
+    <h1 class="display-4">🎧 Mood Playlist Generator</h1>
+
+    <p class="lead mt-3">
+        Genera playlist musicali in base a come ti senti.
+        Scrivi il tuo mood, lascia che l'intelligenza artificiale lo analizzi
+        e consulta subito la tua playlist personalizzata!
+    </p>
+
+    <hr class="my-4" />
+
+    <p>
+        💡 Il sistema utilizza:
+    </p>
+
+    <ul class="list-unstyled">
+        <li>AI per analizzare il tuo stato d’animo</li>
+        <li>Salvataggio playlist tra i preferiti</li>
+    </ul>
+
+    <div class="mt-4">
+        <a asp-page="/Genera" class="btn btn-primary btn-lg">
+            Genera la tua playlist
+        </a>
+        <a asp-page="/Preferiti" class="btn btn-primary btn-lg">
+            Vedi le tue playlist salvate!
+        </a>
+    </div>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #1DB954, #191414);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: #1DB954;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1ed760;
+        }
+    </style>
+
+</div>

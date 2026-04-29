@@ -1,0 +1,38 @@
+﻿@page
+@model GeneraModel
+
+<h2>Genera Playlist 🎧</h2>
+
+<!-- 🔹 FORM 1: genera playlist -->
+<form method="post">
+    <textarea asp-for="UserInput" placeholder="Come ti senti?"></textarea>
+    <br />
+    <button type="submit">Genera playlist</button>
+</form>
+
+<!-- 🔹 MOSTRA PLAYLIST -->
+@if (Model.Songs != null && Model.Songs.Count > 0)
+{
+    <h3>La tua playlist</h3>
+
+    <ul>
+        @foreach (var song in Model.Songs)
+        {
+            <li>@song.Title - @song.Artist</li>
+        }
+    </ul>
+
+    <!-- 🔹 FORM 2: salva playlist -->
+    <form method="post" asp-page-handler="Save">
+
+        <input type="hidden" asp-for="UserInput" />
+
+        @for (int i = 0; i < Model.Songs.Count; i++)
+        {
+            <input type="hidden" name="Songs[@i].Title" value="@Model.Songs[i].Title" />
+            <input type="hidden" name="Songs[@i].Artist" value="@Model.Songs[i].Artist" />
+        }
+
+        <button type="submit">⭐ Salva nei preferiti</button>
+    </form>
+}
