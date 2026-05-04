@@ -18,11 +18,9 @@ namespace MOODYLIST.Pages
             _context = context;
         }
 
-        [BindProperty]
-        public string UserInput { get; set; }
-
-        [BindProperty]
-        public List<Canzone> Songs { get; set; } = new();
+        [BindProperty] public string UserInput { get; set; } = string.Empty;
+        [BindProperty] public List<Canzone> Songs { get; set; } = new();
+        public bool Saved { get; set; } = false;
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -32,22 +30,21 @@ namespace MOODYLIST.Pages
 
         public async Task<IActionResult> OnPostSaveAsync()
         {
-            // controllo login
             if (!User.Identity!.IsAuthenticated)
-            {
                 return RedirectToPage("/Account/Login", new { area = "Identity" });
-            }
-
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (Songs == null || Songs.Count == 0)
                 return Page();
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var nome = UserInput.Length > 30 ? UserInput[..30] + "…" : UserInput;
+
             var playlist = new Playlist
             {
-                Name = "Playlist salvata",
+                Name = $"Playlist – {nome}",
                 Mood = UserInput,
-                UserId = userId
+                UserId = userId!,
+                CreatedAt = DateTime.Now
             };
 
             _context.Playlists.Add(playlist);
@@ -65,7 +62,8 @@ namespace MOODYLIST.Pages
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("/Preferiti");
+            Saved = true;
+            return Page();
         }
     }
 }
