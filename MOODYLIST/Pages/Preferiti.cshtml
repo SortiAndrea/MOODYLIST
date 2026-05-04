@@ -27,7 +27,6 @@
         else if (!Model.Playlists.Any())
         {
             <div class="card p-5 text-center">
-                <div style="font-size:3rem; margin-bottom:12px;">🎵</div>
                 <h4>Nessuna playlist salvata ancora</h4>
                 <p class="text-muted">Genera la tua prima playlist e salvala qui!</p>
                 <a asp-page="/Genera" class="btn btn-primary mt-2">Genera ora</a>
@@ -46,7 +45,7 @@
                                 <div class="d-flex align-items-center gap-2 flex-wrap">
                                     <span class="badge-mood">@playlist.Mood</span>
                                     <small class="text-muted">
-                                        🗓️ @playlist.CreatedAt.ToString("dd MMM yyyy, HH:mm")
+                                        Creata il: @playlist.CreatedAt.ToString("dd MMM yyyy, HH:mm")
                                     </small>
                                 </div>
                             </div>
@@ -54,7 +53,7 @@
                             <!-- Pulsante elimina -->
                             <form method="post" asp-page-handler="Delete" asp-route-id="@playlist.Id"
                                   onsubmit="return confirm('Eliminare questa playlist?')">
-                                <button type="submit" class="btn btn-outline-danger btn-sm">🗑️ Elimina</button>
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Elimina</button>
                             </form>
                         </div>
 
