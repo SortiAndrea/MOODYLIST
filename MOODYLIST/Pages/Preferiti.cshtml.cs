@@ -16,7 +16,7 @@ namespace MOODYLIST.Pages
             _context = context;
         }
 
-        public List<Playlist> Playlists { get; set; }
+        public List<Playlist> Playlists { get; set; } = new();
 
         public void OnGet()
         {
@@ -24,11 +24,10 @@ namespace MOODYLIST.Pages
 
             Playlists = _context.Playlists
                 .Where(p => p.UserId == userId)
-                .Include(p => p.Songs) // IMPORTANTISSIMO
+                .Include(p => p.Songs)
                 .ToList();
         }
 
-        // elimina playlist
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
