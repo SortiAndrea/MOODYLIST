@@ -1,4 +1,4 @@
-﻿namespace MOODYLIST.Model
+namespace MOODYLIST.Model
 {
     public class Playlist
     {
@@ -10,6 +10,9 @@
 
         public string UserId { get; set; }
 
-        public List<Canzone> Songs { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        public List<Canzone> Songs { get; set; } = new();
     }
 }
+
