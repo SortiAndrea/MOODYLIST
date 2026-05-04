@@ -1,11 +1,87 @@
-﻿@page
+@page
 @model PreferitiModel
-<h2>Le tue playlist salvate</h2>
-
-@foreach (var p in Model.Playlists)
-{
-    <div>
-        <h4>@p.Name</h4>
-        <p>@p.Mood</p>
-    </div>
+@{
+    ViewData["Title"] = "I miei Preferiti";
 }
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        <div class="mb-4">
+            <h2 class="section-title">Le mie playlist preferite!</h2>
+            <p class="section-subtitle">Le playlist che hai salvato nel tempo.</p>
+        </div>
+
+        @if (!User.Identity!.IsAuthenticated)
+        {
+            <div class="card p-5 text-center">
+                <div style="font-size:3rem; margin-bottom:12px;"></div>
+                <h4>Accedi per vedere le tue playlist</h4>
+                <p class="text-muted">I preferiti sono disponibili solo per gli utenti registrati.</p>
+                <div class="d-flex gap-3 justify-content-center mt-3">
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Login</a>
+                    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-light">Registrati</a>
+                </div>
+            </div>
+        }
+        else if (!Model.Playlists.Any())
+        {
+            <div class="card p-5 text-center">
+                <div style="font-size:3rem; margin-bottom:12px;">🎵</div>
+                <h4>Nessuna playlist salvata ancora</h4>
+                <p class="text-muted">Genera la tua prima playlist e salvala qui!</p>
+                <a asp-page="/Genera" class="btn btn-primary mt-2">Genera ora</a>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-4">
+                @foreach (var playlist in Model.Playlists.OrderByDescending(p => p.CreatedAt))
+                {
+                    <div class="card p-4">
+                        <!-- Header playlist -->
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <div>
+                                <h5 class="fw-bold mb-1">@playlist.Name</h5>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="badge-mood">@playlist.Mood</span>
+                                    <small class="text-muted">
+                                        🗓️ @playlist.CreatedAt.ToString("dd MMM yyyy, HH:mm")
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Pulsante elimina -->
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@playlist.Id"
+                                  onsubmit="return confirm('Eliminare questa playlist?')">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">🗑️ Elimina</button>
+                            </form>
+                        </div>
+
+                        <!-- Lista canzoni -->
+                        @if (playlist.Songs != null && playlist.Songs.Any())
+                        {
+                            <div class="mt-3">
+                                @for (int i = 0; i < playlist.Songs.Count; i++)
+                                {
+                                    <div class="song-item">
+                                        <span class="song-number">@(i + 1)</span>
+                                        <div>
+                                            <div class="song-title">@playlist.Songs[i].Title</div>
+                                            <div class="song-artist">@playlist.Songs[i].Artist</div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="text-center mt-5">
+                <a asp-page="/Genera" class="btn btn-primary px-5">Genera una nuova playlist</a>
+            </div>
+        }
+
+    </div>
+</div>
