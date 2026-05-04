@@ -1,38 +1,125 @@
-﻿@page
+@page
 @model GeneraModel
+@{
+    ViewData["Title"] = "Genera Playlist";
+}
 
-<h2>Genera Playlist 🎧</h2>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
 
-<!-- 🔹 FORM 1: genera playlist -->
-<form method="post">
-    <textarea asp-for="UserInput" placeholder="Come ti senti?"></textarea>
-    <br />
-    <button type="submit">Genera playlist</button>
-</form>
+        <!-- Header -->
+        <div class="mb-4">
+            <h2 class="section-title">Genera la tua Playlist</h2>
+            <p class="section-subtitle">Descrivi come ti senti e Gemini AI creerà una playlist su misura per te.</p>
+        </div>
 
-<!-- 🔹 MOSTRA PLAYLIST -->
-@if (Model.Songs != null && Model.Songs.Count > 0)
-{
-    <h3>La tua playlist</h3>
-
-    <ul>
-        @foreach (var song in Model.Songs)
+        <!-- Messaggio successo -->
+        @if (Model.Saved)
         {
-            <li>@song.Title - @song.Artist</li>
-        }
-    </ul>
-
-    <!-- 🔹 FORM 2: salva playlist -->
-    <form method="post" asp-page-handler="Save">
-
-        <input type="hidden" asp-for="UserInput" />
-
-        @for (int i = 0; i < Model.Songs.Count; i++)
-        {
-            <input type="hidden" name="Songs[@i].Title" value="@Model.Songs[i].Title" />
-            <input type="hidden" name="Songs[@i].Artist" value="@Model.Songs[i].Artist" />
+            <div class="alert alert-success d-flex align-items-center gap-2 mb-4" role="alert">
+                <span>✅</span>
+                <strong>Playlist salvata nei preferiti!</strong>
+                &nbsp;<a asp-page="/Preferiti" class="ms-auto" style="color:var(--spotify-green)">Vedi i tuoi preferiti →</a>
+            </div>
         }
 
-        <button type="submit">⭐ Salva nei preferiti</button>
-    </form>
+        <!-- FORM: Genera -->
+        <form method="post" id="genera-form">
+            <div class="card p-4 mb-4">
+                <label class="fw-semibold mb-2" for="UserInput">Come ti senti oggi?</label>
+                <textarea asp-for="UserInput"
+                          id="UserInput"
+                          class="form-control mb-3"
+                          rows="3"
+                          placeholder="Es: mi sento felice e pieno di energia, voglio musica che mi carichi…"
+                          style="resize:none;"></textarea>
+
+                <!-- Mood quick chips -->
+                <div class="mb-3">
+                    <small class="text-muted me-2">Suggerimenti rapidi:</small>
+                    <a href="#" class="mood-chip me-1 mb-1" onclick="setMood(this,'mi sento felice e spensierato')">Felice</a>
+                    <a href="#" class="mood-chip me-1 mb-1" onclick="setMood(this,'mi sento triste e malinconico')">Triste</a>
+                    <a href="#" class="mood-chip me-1 mb-1" onclick="setMood(this,'sono pieno di energia, voglio qualcosa che carichi')">Energico</a>
+                    <a href="#" class="mood-chip me-1 mb-1" onclick="setMood(this,'sono calmo e rilassato, voglio musica soft')">Rilassato</a>
+                    <a href="#" class="mood-chip me-1 mb-1" onclick="setMood(this,'sono arrabbiato e frustrato')">Arrabbiato</a>
+                    <a href="#" class="mood-chip me-1 mb-1" onclick="setMood(this,'sono nostalgico, voglio musica degli anni 80 e 90')">Nostalgico</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" onclick="showLoading()">
+                    Genera Playlist con AI
+                </button>
+            </div>
+        </form>
+
+        <!-- PLAYLIST GENERATA -->
+        @if (Model.Songs != null && Model.Songs.Count > 0)
+        {
+            <div class="card p-4">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                    <h4 class="mb-0 fw-bold">La tua Playlist</h4>
+                    <span class="badge-mood">@Model.UserInput</span>
+                </div>
+                <p class="text-muted mb-3" style="font-size:0.85rem;">@Model.Songs.Count canzoni suggerite da Gemini AI</p>
+
+                <div class="mb-4">
+                    @for (int i = 0; i < Model.Songs.Count; i++)
+                    {
+                        <div class="song-item">
+                            <span class="song-number">@(i + 1)</span>
+                            <div>
+                                <div class="song-title">@Model.Songs[i].Title</div>
+                                <div class="song-artist">@Model.Songs[i].Artist</div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- FORM: Salva -->
+                <form method="post" asp-page-handler="Save">
+                    <input type="hidden" asp-for="UserInput" />
+                    @for (int i = 0; i < Model.Songs.Count; i++)
+                    {
+                        <input type="hidden" name="Songs[@i].Title" value="@Model.Songs[i].Title" />
+                        <input type="hidden" name="Songs[@i].Artist" value="@Model.Songs[i].Artist" />
+                    }
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-grow-1">
+                            Salva nei Preferiti!
+                        </button>
+                        <a asp-page="/Genera" class="btn btn-outline-light">
+                            Nuova playlist
+                        </a>
+                    </div>
+
+                    @if (!User.Identity!.IsAuthenticated)
+                    {
+                        <p class="text-muted text-center mt-2" style="font-size:0.8rem;">
+                            ATTENZIONE: Per salvare devi essere loggato
+                            <a asp-area="Identity" asp-page="/Account/Login">Accedi</a> o
+                            <a asp-area="Identity" asp-page="/Account/Register">Registrati</a>
+                        </p>
+                    }
+                </form>
+            </div>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function setMood(el, text) {
+            event.preventDefault();
+            document.getElementById('UserInput').value = text;
+            document.getElementById('UserInput').focus();
+        }
+
+        function showLoading() {
+            var val = document.getElementById('UserInput').value.trim();
+            if (val.length > 0) {
+                document.getElementById('loading-overlay').classList.add('show');
+            }
+        }
+    </script>
 }
