@@ -1,53 +1,44 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="container text-center mt-5">
+<div class="text-center py-5">
 
-    <h1 class="display-4">🎧 Mood Playlist Generator</h1>
+    <div style="font-size:4rem; margin-bottom:16px;">🎧</div>
 
-    <p class="lead mt-3">
-        Genera playlist musicali in base a come ti senti.
-        Scrivi il tuo mood, lascia che l'intelligenza artificiale lo analizzi
-        e consulta subito la tua playlist personalizzata!
+    <h1 class="display-4 fw-bold mb-3">Moody<span style="color:var(--spotify-green)">List</span></h1>
+
+    <p class="lead mb-2" style="color:#b3b3b3; max-width:520px; margin:0 auto;">
+        Scrivi come ti senti – l'AI di Google Gemini analizza il tuo mood e crea
+        una playlist personalizzata solo per te.
     </p>
 
-    <hr class="my-4" />
+    <hr class="my-5" style="max-width:300px; margin:auto;" />
 
-    <p>
-        💡 Il sistema utilizza:
-    </p>
-
-    <ul class="list-unstyled">
-        <li>AI per analizzare il tuo stato d’animo</li>
-        <li>Salvataggio playlist tra i preferiti</li>
-    </ul>
-
-    <div class="mt-4">
-        <a asp-page="/Genera" class="btn btn-primary btn-lg">
-            Genera la tua playlist
-        </a>
-        <a asp-page="/Preferiti" class="btn btn-primary btn-lg">
-            Vedi le tue playlist salvate!
-        </a>
+    <div class="d-flex flex-wrap gap-3 justify-content-center mb-5">
+        <div class="card p-4 text-center" style="width:180px;">
+            <div class="fw-semibold mt-2">AI Powered</div>
+            <div class="text-muted" style="font-size:0.8rem;">Google Gemini 2.5 Flash</div>
+        </div>
+        <div class="card p-4 text-center" style="width:180px;">
+            <div class="fw-semibold mt-2">Salva</div>
+            <div class="text-muted" style="font-size:0.8rem;">Playlist nei preferiti</div>
+        </div>
+        <div class="card p-4 text-center" style="width:180px;">
+            <div class="fw-semibold mt-2">5 Canzoni</div>
+            <div class="text-muted" style="font-size:0.8rem;">Per ogni mood</div>
+        </div>
     </div>
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #1DB954, #191414);
-            color: white;
-        }
-
-        .btn-primary {
-            background-color: #1DB954;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #1ed760;
-        }
-    </style>
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+        <a asp-page="/Genera" class="btn btn-primary btn-lg px-5">
+            Genera la tua playlist
+        </a>
+        <a asp-page="/Preferiti" class="btn btn-outline-light btn-lg px-5">
+            I miei Preferiti
+        </a>
+    </div>
 
 </div>
